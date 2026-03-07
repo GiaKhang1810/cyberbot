@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "target": "esnext",
+        "module": "nodenext",
+        "moduleResolution": "nodenext",
+        "strict": true,
+        "skipLibCheck": true,
+        "types": [
+            "node"
+        ]
+    },
+    "include": [
+        "./source/**.ts",
+        "./cyberOptions.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
