@@ -10,7 +10,7 @@
         ]
     },
     "include": [
-        "./source/**.ts",
+        "./source/**/**.ts",
         "./cyberOptions.ts"
     ],
     "exclude": [

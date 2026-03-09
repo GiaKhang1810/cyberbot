@@ -1,6 +1,5 @@
 /node_modules/
-
 /cyberOptions.ts
-
+*.test.ts
 bun.lock
 package-lock.json

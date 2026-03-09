@@ -1,8 +1,12 @@
-interface Options {
+export interface Meta {
     name: string;
     description: string;
 }
 
-export interface CyberModule {
-    options: Options;
+export interface Module {
+    meta: Meta;
+}
+
+export interface RequireDynamic {
+    default: Module;
 }

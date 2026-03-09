@@ -1,9 +1,12 @@
 import type { Client, Collection } from 'discord.js';
-import type { CyberModule } from './module.js';
+import type { Module } from './module.js';
 
-export interface CyberContext {
+export type ReadyClient = Client<true>;
+export type ModuleCollection = Collection<string, Module>;
+
+export interface Context {
     id: string;
     username: string;
-    client: Client<true>;
-    modules: Collection<string, CyberModule>;
+    client: ReadyClient;
+    modules: ModuleCollection;
 }
