@@ -1,17 +1,22 @@
 import type { GatewayIntentBits } from 'discord.js';
 
-interface System {
-    strict: boolean;
+export interface System {
+    debug: boolean;
     timezone: string;
     locale: string;
 }
 
-interface Bot {
+export interface Guild {
+    id: string;
+    channel: string[];
+}
+
+export interface Bot {
     token: string;
     clientID: string;
     intents: GatewayIntentBits[];
     adminID: string[];
-    publicChannel: string[];
+    guild: Guild[];
 }
 
 export interface CyberOptions {

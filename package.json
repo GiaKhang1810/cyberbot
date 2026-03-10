@@ -20,8 +20,12 @@
     "type": "module",
     "main": "source/",
     "scripts": {
-        "deploy": "bun source/bin/deploy",
-        "start": "bun source"
+        "type": "tsc --noEmit",
+        "reset": "rm -rf node_modules bun.lock && bun install",
+        "dev:deploy": "bun type && bun source/bin/deploy.ts",
+        "dev:clearDeploy": "bun source/bin/clearDeploy.ts",
+        "start": "bun type && bun source/index.ts",
+        "dev": "bun type && bun --watch source/index.ts"
     },
     "devDependencies": {
         "@discordjs/voice": "^0.19.0",

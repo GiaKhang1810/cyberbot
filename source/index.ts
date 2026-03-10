@@ -11,7 +11,7 @@ import { cout } from './utility/cout.js';
 
 import { cyberOptions } from '../cyberOptions.js';
 
-const __filename = fileURLToPath(import.meta.url)
+const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 async function builtinModule(): Promise<ModuleCollection> {
@@ -29,16 +29,12 @@ async function builtinModule(): Promise<ModuleCollection> {
                 const run: RequireDynamic = await import(modulePath);
                 return run.default;
             } catch (error: unknown) {
-                const moreDetailed = new Error('Unable to load');
+                const moreDetailed = new Error('Unable to load ' + name + ' module', {
+                    cause: error
+                });
+
                 moreDetailed.name = name;
-
-                if (error instanceof Error)
-                    moreDetailed.message = error.message;
-
-                if (cyberOptions.system.strict) 
-                    cout.error('Module', error);
-                else 
-                    cout.error('Module', 'Unable to load ' + name + ' module');
+                cout.error('Module', moreDetailed);
 
                 throw moreDetailed;
             }
@@ -54,7 +50,7 @@ async function builtinModule(): Promise<ModuleCollection> {
         collection.set(module.value.meta.name, module.value);
     }
 
-    cout.info('Module', 'Successfully loaded ' + collection.size + ' modules(s)');
+    cout.info('Module', 'Successfully loaded ' + collection.size + ' module(s)');
     return collection;
 }
 
@@ -76,9 +72,11 @@ async function clientReady(client: ReadyClient): Promise<void> {
 }
 
 try {
+    cout.newLine();
+
     if (!cyberOptions.bot.token.length) {
-        cout.warn('Bot', 'Token not found for login.');
-        process.exit(0);
+        cout.warn('Bot', 'Missing token.');
+        process.exit(1);
     }
 
     const clientOptions: ClientOptions = {
@@ -91,16 +89,9 @@ try {
     const client = new Client(clientOptions);
 
     client.once('clientReady', clientReady);
+    process.exit(1)
     client.login(cyberOptions.bot.token);
 } catch (error: unknown) {
-    if (cyberOptions.system.strict) 
-        cout.error('System', error);
-    else {
-        if (error instanceof Error)
-            cout.error('System', error.message);
-        else
-            cout.error('System', 'Enable strict for more details.');
-    }
-
-    process.exit(1);
+    cout.error('System', error);
+    process.exit(2);
 }

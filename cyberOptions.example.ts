@@ -3,7 +3,7 @@ import type { CyberOptions } from './source/models/cyberOptions.js';
 
 export const cyberOptions: CyberOptions = {
     system: {
-        strict: false,
+        debug: false,
         timezone: 'Asia/Ho_Chi_Minh',
         locale: 'vi-VN'
     },
@@ -18,6 +18,11 @@ export const cyberOptions: CyberOptions = {
             GatewayIntentBits.MessageContent
         ],
         adminID: [],
-        publicChannel: []
+        guild: [
+            {
+                id: '',
+                channel: []
+            }
+        ]
     }
 }

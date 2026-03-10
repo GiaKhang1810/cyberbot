@@ -45,27 +45,38 @@ export class Cout {
         return {
             level,
             head,
-            message,
+            message: this.normalizeMessage(message),
             date: now.format('HH:mm:ss DD/MM/YYYY'),
             timestamp: now.toISOString()
         }
     }
 
-    private stringifyMessage(message: unknown): string {
-        if (typeof message === 'string')
-            return message;
-
-        try {
-            if (message instanceof Error)
-                return JSON.stringify({
+    private normalizeMessage(message: unknown): unknown {
+        if (message instanceof Error) {
+            if (this.json)
+                return {
                     name: message.name,
                     message: message.message,
-                    stack: message.stack
-                }, null, 4);
+                    stack: message.stack,
+                    cause: this.normalizeMessage(message.cause)
+                }
 
-            return JSON.stringify(message, null, 4);
+            return message.name + ': ' + message.message;
+        }
+
+        return message;
+    }
+
+    private stringifyMessage(message: unknown): string {
+        const normalized = this.normalizeMessage(message)
+
+        if (typeof normalized === 'string')
+            return normalized;
+
+        try {
+            return JSON.stringify(normalized, null, 4);
         } catch {
-            return String(message);
+            return String(normalized);
         }
     }
 
@@ -87,19 +98,19 @@ export class Cout {
 
         if (this.json) {
             console.log(
-                chalk.bg(colorLevel).text(level.toUpperCase()) + ' ' + JSON.stringify(payload, null, 4)
+                chalk.bold().fg(colorLevel).text(level.toUpperCase()) + ' ' + JSON.stringify(payload, null, 4)
             );
         } else {
             const body = this.stringifyMessage(message);
 
             console.log(
-                chalk.fg('blue').text(payload.date) + ' ' + chalk.fg(colorLevel).text(head) + ' ' + body
+                chalk.fg('cyan').text(payload.date) + ' ' + chalk.fg(colorLevel).text(head) + ' ' + body
             );
         }
     }
 
     public constructor(options?: CoutOptions) {
-        this.json = !!options?.json;
+        this.json = options?.json ?? cyberOptions.system.debug;
         this.timezone = this.parseTZ(options?.timezone);
         this.locale = options?.locale ? options.locale : cyberOptions.system.locale.length ? cyberOptions.system.locale : 'vi-VN';
 
@@ -143,6 +154,12 @@ export class Cout {
 
     public error(head: string, message: unknown): void {
         this.write('error', message, head);
+    }
+
+    public newLine(lent: number = (process.stdout.columns / 2)): void {
+        console.log(
+            chalk.fg('blue').text('='.repeat(lent))
+        );
     }
 }
 
